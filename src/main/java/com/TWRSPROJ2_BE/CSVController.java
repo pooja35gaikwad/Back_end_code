@@ -34,12 +34,17 @@ public class CSVController {
 
 		List<List<String>> records = new ArrayList<>();
 
+		// String for source directory
 		String srcDir = "F:/DHANASHRI/Dhanashri Data/cwall5/";
 		File folder = new File(srcDir);
 		
+		
 		File[] listOfFiles = folder.listFiles();
+		
+		//If no. of files are less than zero
 		if (listOfFiles.length > 0) {
 			for (int i = 0; i < listOfFiles.length; i++ ) {
+				//To check if the list of file has file
 				if (listOfFiles[i].isFile()) {
 					try (BufferedReader br = new BufferedReader( 
 							new FileReader(listOfFiles[i].getName()))) {
@@ -51,7 +56,7 @@ public class CSVController {
 								records.add(Arrays.asList(values));
 							}
 						}
-					}
+				}
 				}
 			}
 		}
