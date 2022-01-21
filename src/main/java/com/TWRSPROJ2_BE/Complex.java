@@ -1,6 +1,5 @@
 package com.TWRSPROJ2_BE;
 
-
 public class Complex {
 
 	private final double re; // the real part
@@ -63,5 +62,14 @@ public class Complex {
 		}
 
 		return new Complex(real, imag);
+	}
+
+	public Complex conjugate() {
+		return new Complex(re, -im);
+	}
+
+	// return a new object whose value is (this * alpha)
+	public Complex scale(double alpha) {
+		return new Complex(alpha * re, alpha * im);
 	}
 }

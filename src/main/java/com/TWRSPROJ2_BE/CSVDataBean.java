@@ -4,14 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CSVDataBean {
-	List<Integer> freq = new ArrayList();
+	List<Long> freq = new ArrayList();
 	List<Float> real = new ArrayList();
 	List<Float> img = new ArrayList();
 	List<Double> magnitude = new ArrayList();
 	List<Double> fftMagnitude = new ArrayList();
+	double[][] BScan = new double[201][32];
 
 	public List<Double> getMagnitude() {
 		return magnitude;
+	}
+
+	public double[][] getBScan() {
+		return BScan;
+	}
+
+	public void setBScan(double[][] bScan) {
+		BScan = bScan;
 	}
 
 	public void setMagnitude(List<Double> magnitude) {
@@ -21,7 +30,7 @@ public class CSVDataBean {
 	/**
 	 * @return
 	 */
-	public List<Integer> getFreq() {
+	public List<Long> getFreq() {
 		return freq;
 	}
 
@@ -36,7 +45,7 @@ public class CSVDataBean {
 	/**
 	 * @param freq
 	 */
-	public void setFreq(List<Integer> freq) {
+	public void setFreq(List<Long> freq) {
 		this.freq = freq;
 	}
 
