@@ -17,6 +17,8 @@ import javax.imageio.ImageIO;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -41,7 +43,7 @@ public class CSVController {
 				// F:\DHANASHRI\Tracking\test1 21 Dec\HUMA WALKING straigh -8m
 				// new FileReader("F:/DHANASHRI/Tracking/test1 21 Dec/HUMA WALKING straigh
 				// -8m/File001.csv"))) {
-				new FileReader("F:/DHANASHRI/Tracking/test1 21 Dec/HUMA WALKING straigh -8m/File002.csv"))) {
+				new FileReader("F:/DHANASHRI/Tracking/DATASETS/PROJECT2 DATASET/T_2_MOVING(1,3)(1,1)_VERTICAL_DIF_sPED/File002.csv"))) {
 			String line = new String();
 
 			while ((line = br.readLine()) != null) {
@@ -109,7 +111,7 @@ public class CSVController {
 		List<CSVDataBean> csvDataBeanList = new ArrayList();
 
 		// String for source directory
-		String srcDir = "F:/DHANASHRI/Tracking/test1 21 Dec/HUMA WALKING straigh -8m/";
+		String srcDir = "F:/DHANASHRI/Tracking/DATASETS/PROJECT2 DATASET/T_2_MOVING(1,3)(1,1)_VERTICAL_DIF_sPED/";
 		File folder = new File(srcDir);
 		double[][] BScan = new double[32][201];
 		File[] listOfFiles = folder.listFiles();
@@ -193,7 +195,7 @@ public class CSVController {
 		List<CSVDataBean> csvDataBeanList = new ArrayList();
 
 		// String for source directory
-		String srcDir = "F:/DHANASHRI/Tracking/test1 21 Dec/HUMA WALKING straigh -8m/";
+		String srcDir = "F:/DHANASHRI/Tracking/DATASETS/PROJECT2 DATASET/T_2_MOVING(1,3)(1,1)_VERTICAL_DIF_sPED/";
 		File folder = new File(srcDir);
 
 		// Matrix of A-Sca stacking
@@ -353,7 +355,7 @@ public class CSVController {
 		List<CSVDataBean> csvDataBeanList = new ArrayList();
 
 		// String for source directory
-		String srcDir = "F:/DHANASHRI/Tracking/test1 21 Dec/HUMA WALKING straigh -8m/";
+		String srcDir = "F:/DHANASHRI/Tracking/DATASETS/PROJECT2 DATASET/T_2_MOVING(1,3)(1,1)_VERTICAL_DIF_sPED/";
 		File folder = new File(srcDir);
 
 		// Matrix of A-Sca stacking
@@ -505,6 +507,17 @@ public class CSVController {
 		
 		
 		return transpose;
+	}
+
+	@PostMapping(path = "/setParameters")
+	public FreqParameters setParameters(@RequestBody FreqParameters freqParams ) throws IOException, IOException {
+		
+		FreqParameters freqParams1 = new FreqParameters();
+		freqParams1.setStartFreq(freqParams.getStartFreq());
+		freqParams1.setStopFreq(freqParams.getStopFreq());
+		freqParams1.setNumberOfpoints(freqParams.getNumberOfpoints());
+		
+		return freqParams1;
 	}
 
 }
