@@ -71,4 +71,24 @@ public class FFT {
 		return y;
 
 	}
+	
+//	public static Complex[][] fft2d(Complex[][] x)
+//	{
+//		int nrows = x.length;
+//			int ncols = x[0].length;
+//		double[] data = new double[nrows * ncols * 2];
+//		for (int j = 0; j < nrows; j++)
+//			for (int i = 0; i < ncols; i++)
+//			{
+//				data[j * ncols * 2 + 2 * i] = x[j][i].re;
+//				data[j * ncols * 2 + 2 * i + 1] = x[j][i].im;
+//			}
+//		new DoubleFFT_2D(nrows, ncols).complexForward(data);
+//		Complex[][] y = new Complex[nrows][ncols];
+//		for (int j = 0; j < nrows; j++)
+//			for (int i = 0; i < ncols; i++)
+//				y[j][i] = new Complex(data[j * ncols * 2 + 2 * i], data[j * ncols * 2
+//						+ 2 * i + 1]);
+//		return y;
+//	}
 }
