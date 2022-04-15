@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -458,7 +459,8 @@ public class CSVController {
 		List<CSVDataBean> csvDataBeanList = new ArrayList();
 
 		// String for source directory
-		String srcDir = "F:\\DHANASHRI\\Tracking\\DATASETS\\try1";
+		String srcDir = "F:\\DHANASHRI\\Tracking\\DATASETS\\test1 21 Dec\\METAL-STATIONAR-3M";
+		//String srcDir = "F:\\DHANASHRI\\Tracking\\DATASETS\\Detection & Localization\\correlation dataset\\exp_R_3_A_0_R";
 		File folder = new File(srcDir);
 
 		// Matrix of A-Sca stacking
@@ -1423,14 +1425,46 @@ public class CSVController {
 				//storageService.save(file);
 				fileNames.add(file.getOriginalFilename());
 			});
+			String path = "F:\\DHANASHRI\\Tracking\\DATASETS\\UI\\";
+			String path1 = "F:\\DHANASHRI\\Tracking\\DATASETS\\UI";
+			files.transferTo(new File(path + files.getOriginalFilename()));
 			//String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 			  message = "Uploaded the files successfully: " + fileNames;
-		      return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+		      return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(path1));
 		    } catch (Exception e) {
 		      message = "Fail to upload files!";
 		      return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
 		    }
 	}
+	
+	
+	@PostMapping(path = "/uploadMultiple")
+	public ResponseEntity<ResponseMessage> uploadMultipleFile(@RequestParam("files") List<MultipartFile> files) {
+		String message = "";
+		try {
+			String path = "F:\\DHANASHRI\\Tracking\\DATASETS\\UI\\";
+			String path1 = "F:\\DHANASHRI\\Tracking\\DATASETS\\UI";
+			for(MultipartFile file : files) {
+				List<String> fileNames = new ArrayList<>();
+				
+				Arrays.asList(file).stream().forEach(file1 -> {
+					//storageService.save(file);
+					fileNames.add(file1.getOriginalFilename());
+				});
+				
+				file.transferTo(new File(path + file.getOriginalFilename()));
+			}
+			
+			//String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+			//  message = "Uploaded the files successfully: " + fileNames;
+		      return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(path1));
+		    } catch (Exception e) {
+		      message = "Fail to upload files!";
+		      return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+		    }
+	}
+
+	
 
 	@GetMapping("/files")
 	public ResponseEntity<List<FileInfo>> getListFiles() {
@@ -1442,4 +1476,93 @@ public class CSVController {
 //		}).collect(Collectors.toList());
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
+	
+	@GetMapping(path = "/getSingleHighPeak")
+	public List<Double> getSingleHighPeak() throws IOException, IOException {
+
+		// Matrix of A-Scan stacking
+		double[][] BScan = new double[32][201];
+		//double[][] HighPeak = new double[1][32];
+		
+		List<Double> highPeak = new ArrayList<Double>();
+
+		// Matrix to Image on UI panel i.e. Transpose of BScan Matrix
+		double[][] transpose = new double[201][32];
+		BScan = readMatrixFromPathAndGiveBscan();
+
+		// Matrix of Mean
+		double[][] MeanSum = new double[1][201];
+		// Matrix of Ones
+		double[][] OnesMatrix = new double[32][1];
+		// Matrix of multiplication of Mean and Ones for reshaping(To obey matrix
+		// multiplication law)
+		double[][] MeanOnesMult = new double[32][201];
+		// Mean subtracted BScan
+		double[][] MeanSubtractedBScan = new double[32][201];
+
+		// For loop to create Ones matrix
+		for (double m = 0; m < 32; m++) {
+			OnesMatrix[(int) m][0] = 1;
+		}
+
+		double rows = BScan.length;
+		double cols = BScan[0].length;
+		double average;
+
+		// For loop to calculate mean columnwise
+		for (double i = 0; i < cols; i++) {
+			double sumCol = 0;
+			for (double j = 0; j < rows; j++) {
+				sumCol = sumCol + BScan[(int) j][(int) i];
+			}
+			average = sumCol / 32;
+			MeanSum[0][(int) i] = average;
+		}
+
+		// For loop for multiplication of Mean and Ones for reshaping(To obey matrix
+		// multiplication law)
+		for (double i = 0; i < rows; i++) {
+			for (double j = 0; j < cols; j++) {
+				MeanOnesMult[(int) i][(int) j] = OnesMatrix[(int) i][0] * MeanSum[0][(int) j];
+			}
+		}
+
+		// For loop to subtract Actual actual values from mean(Mean-Subtraction)
+		for (double i = 0; i < rows; i++) {
+			for (double j = 0; j < cols; j++) {
+				MeanSubtractedBScan[(int) i][(int) j] = BScan[(int) i][(int) j] - MeanOnesMult[(int) i][(int) j];
+			}
+		}
+
+		for (double m = 0; m < 32; m++) {
+			for (double n = 0; n < 201; n++) {
+				transpose[(int) n][(int) m] = MeanSubtractedBScan[(int) m][(int) n];
+			}
+		}
+
+		for (int k = 0; k < 32; k++) {
+			List<Double> eachScan = new ArrayList<Double>();
+			for (int r = 0; r < 201; r++) {
+				eachScan.add(transpose[r][k]);
+			}
+			// double[] numArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+			// Double[] numArray = eachColumn.toArray();
+			Double[] numArray = (Double[]) eachScan.toArray(new Double[eachScan.size()]);
+			
+			Collections.sort(eachScan);  
+		//	Double element=eachScan.get((eachScan.size())-1); 
+			
+			int largest = (int) 0;
+			  for ( double i = 1; i < numArray.length; i++ )
+			  {
+			      if ( numArray[(int) i] > numArray[largest] ) largest = (int) i;
+			  }
+			  
+			highPeak.add((double) largest);
+			// System.out.print(svd);
+		}
+		
+		return highPeak;
+	}
+
 }

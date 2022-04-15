@@ -8,7 +8,7 @@ public class Twrsproj2BeApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Twrsproj2BeApplication.class, args);
-		System.out.println("Application Executed Successfully");
+		System.out.println("Application Executed Successfully \"version: \" + SpringVersion.getVersion()");
 	}
 
 }
